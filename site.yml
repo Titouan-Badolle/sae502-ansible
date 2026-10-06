@@ -1,0 +1,13 @@
+---
+- name: Déployer MariaDB et la base MediaWiki
+  hosts: db
+  become: true
+  roles:
+    - mariadb
+
+- name: Déployer Apache, PHP et MediaWiki
+  hosts: apache
+  become: true
+  roles:
+    - apache
+    - mediawiki

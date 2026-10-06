@@ -1,0 +1,5 @@
+---
+- name: Redémarrer Apache
+  ansible.builtin.command:
+    cmd: apachectl -k graceful
+  changed_when: false

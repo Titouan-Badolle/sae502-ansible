@@ -1,0 +1,41 @@
+---
+- name: Installer les outils nécessaires au téléchargement
+  ansible.builtin.apt:
+    name:
+      - curl
+      - tar
+      - gzip
+    state: present
+
+- name: Télécharger l'archive MediaWiki
+  ansible.builtin.get_url:
+    url: "{{ mediawiki_download_url }}"
+    dest: "/tmp/mediawiki-{{ mediawiki_version }}.tar.gz"
+    mode: '0644'
+
+- name: Décompresser MediaWiki dans /var/www
+  ansible.builtin.unarchive:
+    src: "/tmp/mediawiki-{{ mediawiki_version }}.tar.gz"
+    dest: /var/www
+    remote_src: true
+    creates: "/var/www/mediawiki-{{ mediawiki_version }}/index.php"
+
+- name: Créer ou mettre à jour le lien d'installation MediaWiki
+  ansible.builtin.file:
+    src: "/var/www/mediawiki-{{ mediawiki_version }}"
+    dest: "{{ mediawiki_install_dir }}"
+    state: link
+    force: true
+
+- name: Définir les droits de MediaWiki
+  ansible.builtin.file:
+    path: "{{ mediawiki_install_dir }}"
+    state: directory
+    owner: www-data
+    group: www-data
+    recurse: true
+
+- name: Démarrer Apache dans le conteneur
+  ansible.builtin.command:
+    cmd: apachectl -k start
+  changed_when: false

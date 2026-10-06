@@ -1,0 +1,5 @@
+---
+mediawiki_version: "1.46.0"
+mediawiki_install_dir: /var/www/mediawiki
+mediawiki_db_name: mediawiki
+mediawiki_db_user: wikiuser

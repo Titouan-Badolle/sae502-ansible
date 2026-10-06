@@ -1,0 +1,14 @@
+---
+- name: Installer PHP et les extensions MediaWiki
+  ansible.builtin.apt:
+    name:
+      - php
+      - php-mysql
+      - php-xml
+      - php-mbstring
+      - php-gd
+      - php-intl
+      - php-apcu
+      - php-curl
+    state: present
+  notify: Redémarrer Apache

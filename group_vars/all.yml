@@ -1,0 +1,14 @@
+---
+php_install: true
+
+mediawiki_version: "1.46.0"
+mediawiki_download_url: >-
+  https://releases.wikimedia.org/mediawiki/1.46/mediawiki-1.46.0.tar.gz
+mediawiki_install_dir: /var/www/mediawiki
+mediawiki_db_name: mediawiki
+mediawiki_db_user: wikiuser
+mediawiki_db_password: "WikiTP2026!"
+mediawiki_db_host: "{{ hostvars[groups['db'][0]].ansible_host }}"
+mediawiki_site_name: "Wiki Tousaubut"
+mediawiki_admin_user: WikiAdmin
+mediawiki_admin_password: "AdminTP2026!"

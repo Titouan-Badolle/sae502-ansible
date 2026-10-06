@@ -1,0 +1,40 @@
+---
+- name: Installer MariaDB et le pilote Python
+  ansible.builtin.apt:
+    name:
+      - mariadb-server
+      - python3-pymysql
+    state: present
+    update_cache: true
+    cache_valid_time: 3600
+
+- name: Démarrer MariaDB dans le conteneur
+  ansible.builtin.command:
+    cmd: mysqld_safe --datadir=/var/lib/mysql
+  async: 30
+  poll: 0
+  changed_when: false
+
+- name: Attendre que MariaDB soit accessible
+  ansible.builtin.command:
+    cmd: mysqladmin ping --silent
+  register: mariadb_ping
+  retries: 10
+  delay: 2
+  until: mariadb_ping.rc == 0
+  changed_when: false
+
+- name: Créer la base MediaWiki
+  community.mysql.mysql_db:
+    name: "{{ mediawiki_db_name }}"
+    state: present
+    login_unix_socket: /run/mysqld/mysqld.sock
+
+- name: Créer l'utilisateur de base de données MediaWiki
+  community.mysql.mysql_user:
+    name: "{{ mediawiki_db_user }}"
+    password: "{{ mediawiki_db_password }}"
+    host: "192.168.119.%"
+    priv: "{{ mediawiki_db_name }}.*:ALL"
+    state: present
+    login_unix_socket: /run/mysqld/mysqld.sock
